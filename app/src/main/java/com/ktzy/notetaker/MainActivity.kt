@@ -1,7 +1,5 @@
 package com.ktzy.notetaker
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -16,12 +14,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity() {
-    private var addBtn: FloatingActionButton? = null
-    private var notesRecyclerView: RecyclerView? = null
+    private lateinit var addBtn: FloatingActionButton
+    private lateinit var notesRecyclerView: RecyclerView
     private lateinit var linearLayoutManager: LinearLayoutManager
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private val notes = listOf(
+    val notes = listOf(
         Note("Shopping List", "3 Tomatoes", LocalDateTime.now()),
         Note("Life Decisions", "Accept Offer", LocalDateTime.now()),
         Note("Third", "Wheelie", LocalDateTime.now())
@@ -35,24 +33,23 @@ class MainActivity : AppCompatActivity() {
         addBtn = findViewById(R.id.fabAdd)
         notesRecyclerView = findViewById(R.id.rvNotes)
         linearLayoutManager = LinearLayoutManager(this)
-        notesRecyclerView?.layoutManager = linearLayoutManager
-        notesRecyclerView?.adapter = NoteAdapter(notes)
+        notesRecyclerView.layoutManager = linearLayoutManager
+        notesRecyclerView.adapter = NoteAdapter(notes)
+        val dbHelper = DBHelper(applicationContext)
 
-        addBtn?.setOnClickListener(View.OnClickListener {
+        addBtn.setOnClickListener(View.OnClickListener {
             val intent = Intent(applicationContext, AddNote::class.java)
             startActivity(intent)
         })
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menuInflater.inflate(R.menu.home_actionbar_menu, menu)
-//        // Associate searchable configuration with the SearchView
-//        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-//        (menu!!.findItem(R.id.search).actionView as SearchView).apply {
-//            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-//        }
-//
-//        return true
-//    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.home_action_menu, menu)
+        val searchItem = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as SearchView
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
 
 }
