@@ -8,10 +8,10 @@ import android.provider.BaseColumns
 class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
         val createNoteTable = "CREATE TABLE ${NoteEntry.TABLE_NAME} (" +
-                              "${BaseColumns._ID} INTEGER PRIMARY KEY" +
-                              "${NoteEntry.COLUMN_NAME_TITLE} TEXT" +
-                              "${NoteEntry.COLUMN_NAME_CONTENT} TEXT" +
-                              "${NoteEntry.COLUMN_NAME_DATE} TEXT DEFAULT CURRENT_TIMESTAMP";
+                              "${BaseColumns._ID} INTEGER PRIMARY KEY," +
+                              "${NoteEntry.COLUMN_NAME_TITLE} TEXT," +
+                              "${NoteEntry.COLUMN_NAME_CONTENT} TEXT," +
+                              "${NoteEntry.COLUMN_NAME_DATE_CREATED} TEXT DEFAULT CURRENT_TIMESTAMP)";
         db.execSQL(createNoteTable)
     }
 

@@ -1,9 +1,13 @@
 package com.ktzy.notetaker
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 class NoteViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.note_item, parent, false)) {
@@ -17,10 +21,10 @@ class NoteViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         dateCreated = itemView.findViewById(R.id.txtDate)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun bind(note: Note){
         title?.text = note.title
         content?.text = note.content
-        dateCreated?.text = note.dateCreated.toString()
+        dateCreated?.text = note.dateCreated.format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm")).toString()
     }
-
 }
