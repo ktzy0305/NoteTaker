@@ -45,6 +45,39 @@ class NoteRepository(context: Context) : NoteDao {
         return notes
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getNoteByID(id: Int): Note? {
+        val db = dbHelper.readableDatabase
+        val cursor = db.query(
+            NoteEntry.TABLE_NAME,
+            null,
+            "${BaseColumns._ID} = ?",
+             arrayOf(id.toString()),
+            null,
+            null,
+            null
+        )
+        lateinit var note:Note
+        with(cursor){
+            if(cursor.moveToFirst()) {
+                val noteId = getInt(getColumnIndexOrThrow(BaseColumns._ID))
+                val noteTitle = getString(getColumnIndex(NoteEntry.COLUMN_NAME_TITLE))
+                val noteContent = getString(getColumnIndex(NoteEntry.COLUMN_NAME_CONTENT))
+                var noteDateCreated = getString(getColumnIndex(NoteEntry.COLUMN_NAME_DATE_CREATED))
+                noteDateCreated = noteDateCreated.replace(' ', 'T')
+                note = Note(
+                    noteId,
+                    noteTitle,
+                    noteContent.toString(),
+                    LocalDateTime.parse(noteDateCreated)
+                )
+                db.close()
+                return note
+            }
+        }
+        return null
+    }
+
     override fun createNote(note: Note) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -56,7 +89,19 @@ class NoteRepository(context: Context) : NoteDao {
     }
 
     override fun editNote(note: Note) {
-        TODO("Not yet implemented")
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put(NoteEntry.COLUMN_NAME_TITLE, note.title)
+            put(NoteEntry.COLUMN_NAME_CONTENT, note.content)
+        }
+        val selection = "${BaseColumns._ID} = ?"
+        val selectionArgs = arrayOf(note.id.toString())
+        db.update(
+            NoteEntry.TABLE_NAME,
+            values,
+            selection,
+            selectionArgs
+        )
     }
 
     override fun deleteNote(note: Note) {

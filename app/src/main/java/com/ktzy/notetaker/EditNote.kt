@@ -1,26 +1,35 @@
 package com.ktzy.notetaker
 
 import android.content.Intent
+import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
+import androidx.annotation.RequiresApi
 
-
-class AddNote : AppCompatActivity() {
+class EditNote : AppCompatActivity() {
     private lateinit var noteTitle: EditText
     private lateinit var noteContent: EditText
     private lateinit var noteRepository: NoteRepository
+    private lateinit var note: Note
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.note_view)
+
         // Note Repository
         noteRepository = NoteRepository(applicationContext)
         // Layout Components
         noteTitle = findViewById(R.id.etNoteTitle)
         noteContent = findViewById(R.id.etNoteContent)
+
+        val noteID = intent.getStringExtra("NoteID")
+        note = noteRepository.getNoteByID(noteID.toInt())!!
+        noteTitle.setText(note.title)
+        noteContent.setText(note.content)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -38,8 +47,8 @@ class AddNote : AppCompatActivity() {
     private fun saveNote() {
         val title = noteTitle.text.toString()
         val content = noteContent.text.toString()
-        val newNote = Note(title, content)
-        noteRepository.createNote(newNote)
+        val newNote = Note(note.id!!, title, content, note.dateCreated)
+        noteRepository.editNote(newNote)
 
         //Redirect to MainPage
         startActivity(Intent(applicationContext, MainActivity::class.java))
