@@ -16,7 +16,7 @@
         android:background="@android:drawable/screen_background_light_transparent"
         android:ems="10"
         android:hint="Title"
-        android:inputType="textPersonName"
+        android:inputType="textMultiLine"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

@@ -24,9 +24,9 @@ class NoteViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun bind(note: Note){
-        title?.text = if (note.title == "") "Untitled Note" else note.title
-        content?.text = note.content
-        dateCreated?.text = note.dateCreated.format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm")).toString()
+        title?.text = if (note.title == "") "Untitled Note" else if (note.title.length < 40) note.title else note.title.substring(0, 39) + "..."
+        content?.text = if (note.content.length <= 30) note.content else note.content.substring(0, 29) + "..."
+        dateCreated?.text = note.dateCreated.format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")).toString()
 
         itemView.setOnClickListener(View.OnClickListener {
             val intent = Intent(itemView.context, EditNote::class.java)

@@ -44,4 +44,9 @@ class AddNote : AppCompatActivity() {
         //Redirect to MainPage
         startActivity(Intent(applicationContext, MainActivity::class.java))
     }
+
+    override fun onDestroy() {
+        saveNote()
+        super.onDestroy()
+    }
 }

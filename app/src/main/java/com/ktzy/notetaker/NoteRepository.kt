@@ -11,7 +11,7 @@ class NoteRepository(context: Context) : NoteDao {
     private var dbHelper: DBHelper = DBHelper(context)
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getNotes(): List<Note> {
+    override fun getNotes(): MutableList<Note> {
         val db = dbHelper.readableDatabase
 
         // How you want the results sorted in the resulting Cursor
@@ -102,9 +102,18 @@ class NoteRepository(context: Context) : NoteDao {
             selection,
             selectionArgs
         )
+        dbHelper.close()
     }
 
     override fun deleteNote(note: Note) {
-        TODO("Not yet implemented")
+        val db = dbHelper.writableDatabase
+        val selection = "${BaseColumns._ID} = ?"
+        val selectionArgs = arrayOf(note.id.toString())
+        db.delete(
+            NoteEntry.TABLE_NAME,
+            selection,
+            selectionArgs
+        )
+        dbHelper.close()
     }
 }
